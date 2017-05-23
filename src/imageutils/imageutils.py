@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 
 
-def img_to_array(img, data_format='channels_first', data_type=np.float32):
+def img_to_array(img, data_format='channels_last', data_type=np.float32):
     """Converts a PIL Image instance to a Numpy array.
     Arguments:
       img: PIL Image instance.
