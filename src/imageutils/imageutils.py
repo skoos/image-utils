@@ -1,6 +1,37 @@
 """ Library for image processing """
-from PIL import Image
 import os
+from PIL import Image
+import numpy as np
+
+
+def img_to_array(img, data_format='channels_first'):
+    """Converts a PIL Image instance to a Numpy array.
+    Arguments:
+      img: PIL Image instance.
+      data_format: Image data format.
+    Returns:
+      A 3D Numpy array.
+    Raises:
+      ValueError: if invalid `img` or `data_format` is passed.
+    """
+    if data_format not in {'channels_first', 'channels_last'}:
+        raise ValueError('Unknown data_format: ', data_format)
+    # Numpy array x has format (height, width, channel)
+    # or (channel, height, width)
+    # but original PIL image has format (width, height, channel)
+    # 'channels_first' by default for tensorflow image format
+    img_data = np.asarray(img, dtype=np.float32)
+    if len(img_data.shape) == 3:
+        if data_format == 'channels_first':
+            img_data = img_data.transpose(2, 0, 1)
+    elif len(img_data.shape) == 2:
+        if data_format == 'channels_first':
+            img_data = img_data.reshape((1, img_data.shape[0], img_data.shape[1]))
+        else:
+            img_data = img_data.reshape((img_data.shape[0], img_data.shape[1], 1))
+    else:
+        raise ValueError('Unsupported image shape: ', img_data.shape)
+    return img_data
 
 
 def resize_img(img, target_size=None):
