@@ -63,12 +63,14 @@ def load_img(path, target_size=None):
     """
     if Image is None:
         raise ImportError('Could not import PIL.Image. '
-                          'The use of `array_to_img` requires PIL.')
-    img = Image.open(path)
+                          'The use of `load_img` requires PIL.')
+    if not os.path.exists(path):
+        raise ValueError('Directory not found: ', path)
+    img = Image.open(path, progressive=False)
     if img.mode != 'RGB':
         img = img.convert('RGB')
     if target_size:
-        img = resize_img(img)
+        img = resize_img(img, target_size=target_size)
     return img
 
 
@@ -77,4 +79,4 @@ def save_img(img, output_path=None):
     if not output_path or not os.path.exists(os.path.dirname(output_path)):
         raise ValueError('Directory not found: ', output_path)
     else:
-        img.save(output_path, quality=95)
+        img.save(output_path, 'jpeg', quality=95)
