@@ -77,4 +77,4 @@ def save_img(img, output_path=None):
     if not output_path or not os.path.exists(os.path.dirname(output_path)):
         raise ValueError('Directory not found: ', output_path)
     else:
-        img.save(output_path, quality=100)
+        img.save(output_path, quality=95)
