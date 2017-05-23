@@ -66,7 +66,7 @@ def load_img(path, target_size=None):
                           'The use of `load_img` requires PIL.')
     if not os.path.exists(path):
         raise ValueError('Directory not found: ', path)
-    img = Image.open(path, progressive=False)
+    img = Image.open(path)
     if img.mode != 'RGB':
         img = img.convert('RGB')
     if target_size:
