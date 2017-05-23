@@ -1,6 +1,6 @@
 """ Library for image processing """
-import os
 from PIL import Image
+import os
 
 
 def resize_img(img, target_size=None):
