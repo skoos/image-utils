@@ -77,6 +77,6 @@ def load_img(path, target_size=None):
 def save_img(img, output_path=None):
     """Saves PIL image with a provided filename"""
     if not output_path or not os.path.exists(os.path.dirname(output_path)):
-        raise ValueError('Directory not found: ', output_path)
+        raise ValueError('Directory not found: ', os.path.dirname(output_path))
     else:
         img.save(output_path, 'jpeg', quality=95)
