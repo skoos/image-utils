@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 
 
-def img_to_array(img, data_format='channels_first'):
+def img_to_array(img, data_format='channels_first', data_type=np.float32):
     """Converts a PIL Image instance to a Numpy array.
     Arguments:
       img: PIL Image instance.
@@ -20,7 +20,7 @@ def img_to_array(img, data_format='channels_first'):
     # or (channel, height, width)
     # but original PIL image has format (width, height, channel)
     # 'channels_first' by default for tensorflow image format
-    img_data = np.asarray(img, dtype=np.float32)
+    img_data = np.asarray(img, dtype=data_type)
     if len(img_data.shape) == 3:
         if data_format == 'channels_first':
             img_data = img_data.transpose(2, 0, 1)
