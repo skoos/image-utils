@@ -103,7 +103,7 @@ def load_img_from_md5(image_md5, url='https://octopus.heuritech.com/get?md5=', t
 
 def get_md5_from_imagepath(image_path):
     """Computes and returns md5 from image (providing its path)."""
-    if image_path is None or not os.path.exists(image_path)):
+    if image_path is None or not os.path.exists(image_path):
         LOGGER.warning('Image not found in get_md5_from_imagepath function: ' + image_path)
         return None
     hash_md5 = hashlib.md5()
