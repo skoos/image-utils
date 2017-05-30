@@ -3,7 +3,7 @@ import os
 import logging
 import hashlib
 import io
-import request
+import requests
 from PIL import Image
 import numpy as np
 
