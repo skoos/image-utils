@@ -3,7 +3,7 @@ import os
 import logging
 import hashlib
 import io
-import requests
+import urllib
 from PIL import Image
 import numpy as np
 
@@ -91,7 +91,7 @@ def load_img_from_md5(image_md5, url='https://octopus.heuritech.com/get?md5='):
     """Load PIL image by getting image md5 from url (octopus by default)."""
     try:
         md5_url = url + image_md5
-        file_data = io.BytesIO(request.urlopen(md5_url).read())
+        file_data = io.BytesIO(urllib.request.urlopen(md5_url).read())
         img = Image.open(file_data)
     except ValueError as error:
         LOGGER.WARNING('Error in load_img_from_md5: ' + str(error))
