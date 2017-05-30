@@ -87,12 +87,14 @@ def save_img(img, output_path, quality=95):
         img.save(output_path, 'jpeg', quality=quality)
 
 
-def load_img_from_md5(image_md5, url='https://octopus.heuritech.com/get?md5='):
+def load_img_from_md5(image_md5, url='https://octopus.heuritech.com/get?md5=', target_size=None):
     """Load PIL image by getting image md5 from url (octopus by default)."""
     try:
         md5_url = url + image_md5
         file_data = io.BytesIO(urllib.request.urlopen(md5_url).read())
         img = Image.open(file_data)
+        if target_size:
+            img = resize_img(img, target_size=target_size)
     except ValueError as error:
         LOGGER.warning('Error in load_img_from_md5: ' + str(error))
         return None
