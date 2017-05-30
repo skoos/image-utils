@@ -67,7 +67,7 @@ def load_img(path, target_size=None):
         #raise ImportError('Could not import PIL.Image. '
         #                  'The use of `load_img` requires PIL.')
     if not os.path.exists(path):
-        LOGGER.warning('Directory not found ing load_img function: ' + path)
+        LOGGER.warning('Image not found in load_img function: ' + path)
         return None
         #raise ValueError('Directory not found: ', path)
     img = Image.open(path)
