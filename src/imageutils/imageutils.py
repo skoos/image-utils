@@ -1,21 +1,16 @@
 """ Library for image processing """
 import os
 import logging
+import hashlib
+import io
+import request
 from PIL import Image
 import numpy as np
 
 LOGGER = logging.getLogger('imageutils')
 
 def img_to_array(img, data_format='channels_last', data_type=np.float32):
-    """Converts a PIL Image instance to a Numpy array.
-    Arguments:
-      img: PIL Image instance.
-      data_format: Image data format.
-    Returns:
-      A 3D Numpy array.
-    Raises:
-      ValueError: if invalid `img` or `data_format` is passed.
-    """
+    """Converts a PIL Image instance to a Numpy array."""
     if data_format not in {'channels_first', 'channels_last'}:
         LOGGER.WARNING('Unknown/missing data format in img_to_array function: ' + data_format)
         return None
@@ -41,7 +36,7 @@ def img_to_array(img, data_format='channels_last', data_type=np.float32):
 
 
 def resize_img(img, target_size):
-    """Return resized PIL image"""
+    """Return a resized PIL image."""
     if target_size is None \
        or not isinstance(target_size, (list, tuple, np.ndarray)) \
        or len(target_size) != 2:
@@ -54,7 +49,7 @@ def resize_img(img, target_size):
 
 
 def crop_img(img, target_crop):
-    """Returns cropped PIL image"""
+    """Returns a cropped PIL image."""
     if target_crop is None \
        or not isinstance(target_crop, (list, tuple, np.ndarray)) \
        or len(target_crop) != 4:
@@ -65,17 +60,7 @@ def crop_img(img, target_crop):
 
 
 def load_img(path, target_size=None):
-    """Loads an image into PIL format.
-    # Arguments
-        path: Path to image file
-        grayscale: Boolean, whether to load the image as grayscale.
-        target_size: Either `None` (default to original size)
-            or tuple of ints `(img_height, img_width)`.
-    # Returns
-        A PIL Image instance.
-    # Raises
-        ImportError: if PIL is not available.
-    """
+    """Loads an image into PIL format."""
     if Image is None:
         LOGGER.WARNING('Could not import PIL.Image. The use of `load_img` requires PIL.')
         return None
@@ -94,9 +79,33 @@ def load_img(path, target_size=None):
 
 
 def save_img(img, output_path, quality=95):
-    """Saves PIL image with a provided filename"""
+    """Saves PIL image with a provided filename."""
     if not output_path or not os.path.exists(os.path.dirname(output_path)):
         LOGGER.WARNING('Directory not found in save_img function: ' + output_path)
         #raise ValueError('Directory not found: ', os.path.dirname(output_path))
     else:
         img.save(output_path, 'jpeg', quality=quality)
+
+
+def load_img_from_md5(image_md5, url='https://octopus.heuritech.com/get?md5='):
+    """Load PIL image by getting image md5 from url (octopus by default)."""
+    try:
+        md5_url = url + image_md5
+        file_data = io.BytesIO(request.urlopen(md5_url).read())
+        img = Image.open(file_data)
+    except ValueError as error:
+        LOGGER.WARNING('Error in load_img_from_md5: ' + str(error))
+        return None
+    return img
+
+
+def get_md5_from_imagepath(image_path):
+    """Computes and returns md5 from image (providing its path)."""
+    if image_path is None or not os.path.exists(os.path.dirname(image_path)):
+        LOGGER.WARNING('Directory not found in get_md5_from_imagepath function: ' + image_path)
+        return None
+    hash_md5 = hashlib.md5()
+    with open(image_path, "rb") as file_data:
+        for chunk in iter(lambda: file_data.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
